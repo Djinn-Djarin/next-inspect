@@ -2,6 +2,12 @@
 
 Zero-code, pluggable request/API logging for Next.js. Drop in the plugin, and every `/api/*` call (and server-side `fetch`) is captured with method, URL, status, duration, request/response bodies and a `file:line` initiator — streamed to an always-on inspector panel in the corner of your app.
 
+## 🚀 Interactive Demo
+
+Want to see it in action before installing? Click below to instantly launch a fully configured Next.js playground in your browser:
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Djinn-Djarin/next-inspect?file=example/app/page.tsx)
+
 ## Install
 
 ```bash
