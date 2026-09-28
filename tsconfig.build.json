@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "target": "es2022",
     "lib": ["es2022", "dom", "dom.iterable"],
     "jsx": "react-jsx",
@@ -10,6 +10,7 @@
     "rootDir": "./src",
     "strict": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "noEmit": false
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
