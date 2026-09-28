@@ -23,7 +23,7 @@ export interface NextLogInspectorPluginOptions {
 	capture?: NextLogInspectorCaptureOptions;
 }
 
-const PKG = 'next-logger';
+const PKG = '@djarin/next-inspect';
 
 function writeIfMissing(file: string, content: string, log: (msg: string) => void): void {
 	if (existsSync(file)) return;
@@ -51,13 +51,13 @@ function pickInstrumentationFile(root: string): string {
  * Wrap your next config:
  *
  *   // next.config.mjs
- *   import { withLogInspector } from 'next-logger/plugin';
+ *   import { withLogInspector } from '@djarin/next-inspect/plugin';
  *   export default withLogInspector()({ /* your config *\/ });
  *
  * The `LogInspector` component is NOT auto-mounted — add it yourself to your
  * root layout:
  *
- *   import { LogInspector } from 'next-logger/components';
+ *   import { LogInspector } from '@djarin/next-inspect/components';
  *
  *   export default function RootLayout({ children }) {
  *     return <html><body>{children}<LogInspector /></body></html>;
@@ -99,7 +99,7 @@ export function withLogInspector(options: NextLogInspectorPluginOptions = {}) {
 				warn(
 					`[log-inspector] ${file.replace(root, '.')} already exists and is not composed with ${PKG}. ` +
 						`Wire it up manually once:\n` +
-						`  import { installServerCapture } from 'next-logger/server';\n` +
+						`  import { installServerCapture } from '${PKG}/server';\n` +
 						`  export async function register() {\n` +
 						`    installServerCapture();\n` +
 						`  }`
@@ -110,7 +110,7 @@ export function withLogInspector(options: NextLogInspectorPluginOptions = {}) {
 
 		const opts = JSON.stringify(captureOpts);
 		const content = [
-			`import { installServerCapture } from 'next-logger/server';`,
+			`import { installServerCapture } from '${PKG}/server';`,
 			'',
 			`export async function register() {`,
 			`  installServerCapture(${opts});`,

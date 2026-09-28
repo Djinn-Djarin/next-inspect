@@ -7,6 +7,9 @@
   },
   "type": "module",
   "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "keywords": [
     "next",
     "nextjs",
@@ -19,19 +22,41 @@
     "nextjs logger"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./plugin": "./src/plugin/index.ts",
-    "./server": "./src/server/index.ts",
-    "./client": "./src/client/index.ts",
-    "./components": "./src/components/index.tsx",
-    "./inspector-theme.css": "./src/components/inspector-theme.css",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./plugin": {
+      "types": "./dist/plugin/index.d.ts",
+      "import": "./dist/plugin/index.js",
+      "default": "./dist/plugin/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js",
+      "default": "./dist/client/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    },
+    "./inspector-theme.css": "./dist/components/inspector-theme.css",
     "./package.json": "./package.json"
   },
   "files": [
+    "dist",
     "src",
     "README.md"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').copyFileSync('src/components/inspector-theme.css', 'dist/components/inspector-theme.css')\"",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

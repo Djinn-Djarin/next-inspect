@@ -92,18 +92,27 @@ export function computeSize(body: unknown): { bytes: number; formatted: string }
 	return { bytes, formatted: `${(bytes / (1024 * 1024)).toFixed(1)} MB` };
 }
 
+const TAG_MAP: Record<string, string> = {
+	'server cache': 'server cache',
+	'client cache': 'client cache',
+	'api client': 'client',
+	'server fetch': 'server',
+	'server api': 'server',
+	'server log': 'server log',
+	'server console': 'server log',
+	'server': 'server',
+	'api': 'client'
+};
+
 export function normalizeTag(raw: string | undefined, cached: boolean): string {
 	const t = (raw || '').toLowerCase();
-	if (cached && t.includes('server')) return 'server cache';
-	if (cached && t.includes('client')) return 'client cache';
-	if (t === 'api client') return 'client';
-	if (t === 'server fetch') return 'server';
-	if (t === 'server api') return 'server';
-	if (t === 'server log') return 'server log';
-	if (t === 'server console') return 'server log';
-	if (t === 'server') return 'server';
-	if (t === 'api') return 'client';
-	return t || 'client log';
+	
+	if (cached) {
+		if (t.includes('server') || t === 'api') return 'server cache';
+		if (t.includes('client')) return 'client cache';
+	}
+	
+	return TAG_MAP[t] || 'client log';
 }
 
 export function parseLogEntry(log: LogEntry, index: number): ParsedLog {
@@ -272,13 +281,13 @@ export const comparators: Record<SortKey, (a: ParsedLog, b: ParsedLog) => number
 	size: (a, b) => (a.resSizeBytes + a.reqSizeBytes) - (b.resSizeBytes + b.reqSizeBytes)
 };
 
-export function getReqSizeColorClass(bytes: number, thresholdKB: number = 100): string {
+export function getReqSizeColorClass(bytes: number, thresholdKB: number = 50): string {
 	if (bytes >= thresholdKB * 1024) return 'text-rose-400 font-bold';
 	if (bytes >= (thresholdKB * 1024) / 5) return 'text-amber-500 font-semibold';
 	return 'text-sky-300 font-medium';
 }
 
-export function getResSizeColorClass(bytes: number, thresholdKB: number = 100): string {
+export function getResSizeColorClass(bytes: number, thresholdKB: number = 50): string {
 	if (bytes >= thresholdKB * 1024) return 'text-rose-400 font-bold';
 	if (bytes >= (thresholdKB * 1024) / 5) return 'text-amber-500 font-semibold';
 	return 'text-emerald-400 font-medium';

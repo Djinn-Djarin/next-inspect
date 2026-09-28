@@ -20,13 +20,21 @@ export default withLogInspector()({
   transpilePackages: ['@djarin/next-inspect'],
   // Next.js basePath (if your app uses a custom base path like '/traccrops')
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  
+  // ⚠️ REQUIRED FOR NEXT.JS 14:
+  // Next.js 14 requires this flag to enable instrumentation.ts.
+  // Next.js 15 users can omit this as it is stable and enabled by default.
+  experimental: {
+    instrumentationHook: true,
+  }
 });
 ```
 
-Then mount the panel in your root `app/layout.tsx`:
+Then create a client component wrapper (e.g. `src/components/log-inspector.tsx`):
 
 ```tsx
-import '@djarin/next-inspect/inspector-theme.css';
+"use client";
+
 import dynamic from 'next/dynamic';
 
 const LogInspector = dynamic(
@@ -34,12 +42,29 @@ const LogInspector = dynamic(
   { ssr: false }
 );
 
+export function LogInspectorWrapper() {
+  return (
+    <LogInspector 
+      // Optional: set to true to explicitly log browser fetches to external domains (e.g. CDNs, 3rd party APIs).
+      // By default, the client fetch interceptor only logs same-origin (/api/*) requests.
+      options={{ logExternal: false }} 
+    />
+  );
+}
+```
+
+And render the wrapper in your root `app/layout.tsx`:
+
+```tsx
+import '@djarin/next-inspect/inspector-theme.css';
+import { LogInspectorWrapper } from '@/components/log-inspector';
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
         {children}
-        <LogInspector />
+        <LogInspectorWrapper />
       </body>
     </html>
   );
@@ -113,6 +138,26 @@ withLogInspector({
 });
 ```
 
+## Filtering Requests (CDNs, Fonts, etc.)
+
+By default, the server intercepts incoming requests to your `apiPrefix` and **all outbound `fetch()` calls** made by your server.
+
+**Note on standard HTML assets:** The inspector only intercepts requests made via JavaScript `fetch()`. It will **never** log standard HTML asset tags like `<link href="...">`, `<script src="...">`, or `<img src="...">` because those are handled directly by the browser network layer, not `fetch`.
+
+However, if your Next.js server makes outbound calls to external services during SSR (like `next/font` explicitly fetching from `fonts.googleapis.com` via `fetch`, or other third-party APIs), you can filter them out using the `skipPaths` array. The inspector will ignore any request whose URL contains any of the strings in the array:
+
+```ts
+// next.config.ts
+withLogInspector({
+  capture: {
+    // Ignore the inspector itself, Next internals, and Google Fonts CDNs
+    skipPaths: ['/__log-inspector', '/_next/', 'fonts.googleapis.com'] 
+  }
+})
+```
+
+*Note: If you have a custom `instrumentation.ts`, you can pass this same array to `installServerCapture({ skipPaths: [...] })` instead.*
+
 ## How it works
 
 1. The **plugin** generates route handlers for the SSE stream and clear endpoint, and optionally generates `instrumentation.ts`.
@@ -133,7 +178,4 @@ The client automatically:
 ## License
 
 MIT
-
-## Known Limitations
-
-- **Response Bodies for Outbound Fetches (Next.js 15)**: `@djarin/next-inspect` intercepts `globalThis.fetch` to log outbound server requests. However, due to a known bug in Next.js 15 / `undici` (PR #73274), calling `.clone().text()` on a patched fetch response can cause the request to hang indefinitely. To prevent your application from deadlocking, the inspector captures outbound fetch status codes and metadata but **does not** read or log the response body for outbound requests on the server. Inbound request bodies (`/api/*`) are still fully logged.
+

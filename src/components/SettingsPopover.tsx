@@ -19,6 +19,8 @@ interface SettingsPopoverProps {
 	setPingThreshold: (v: number) => void;
 	sizeThreshold: number;
 	setSizeThreshold: (v: number) => void;
+	logExternal: boolean;
+	handleToggleLogExternal: () => void;
 }
 
 export function SettingsPopover({
@@ -38,7 +40,9 @@ export function SettingsPopover({
 	pingThreshold,
 	setPingThreshold,
 	sizeThreshold,
-	setSizeThreshold
+	setSizeThreshold,
+	logExternal,
+	handleToggleLogExternal
 }: SettingsPopoverProps) {
 	if (!showSettings) return null;
 
@@ -100,6 +104,16 @@ export function SettingsPopover({
 						type="checkbox"
 						checked={openOnStartup}
 						onChange={handleToggleOpenOnStartup}
+						className="accent-indigo-500 rounded cursor-pointer h-3.5 w-3.5"
+					/>
+				</div>
+
+				<div className="flex items-center justify-between">
+					<span className="text-pill font-medium text-theme-text-muted uppercase tracking-wider">Log External APIs (Browser)</span>
+					<input
+						type="checkbox"
+						checked={logExternal}
+						onChange={handleToggleLogExternal}
 						className="accent-indigo-500 rounded cursor-pointer h-3.5 w-3.5"
 					/>
 				</div>

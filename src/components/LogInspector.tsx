@@ -69,8 +69,10 @@ export function LogInspector({ className = '', options }: LogInspectorProps) {
 
 	const AUTO_POP_KEY = 'li-auto-pop';
 	const OPEN_ON_START_KEY = 'li-open-on-start';
+	const LOG_EXTERNAL_KEY = 'li-log-external';
 	const [autoPopOnError, setAutoPopOnError] = useState(false);
 	const [openOnStartup, setOpenOnStartup] = useState(false);
+	const [logExternal, setLogExternal] = useState(options?.logExternal ?? false);
 	const [mounted, setMounted] = useState(false);
 
 	const [sortColumn, setSortColumn] = useState<SortKey>('timestamp');
@@ -181,6 +183,9 @@ export function LogInspector({ className = '', options }: LogInspectorProps) {
 			}
 
 			if (localStorage.getItem(AUTO_POP_KEY) === 'true') setAutoPopOnError(true);
+			const savedLogExternal = localStorage.getItem(LOG_EXTERNAL_KEY);
+			if (savedLogExternal !== null) setLogExternal(savedLogExternal === 'true');
+
 			setSavedRecordsLimitState(getSavedRecordsLimit());
 			setPersistEnabled(clientConfig.persist);
 
@@ -305,6 +310,17 @@ export function LogInspector({ className = '', options }: LogInspectorProps) {
 				localStorage.setItem(OPEN_ON_START_KEY, String(next));
 			}
 			showToast(next ? 'Popup at start enabled' : 'Popup at start disabled');
+			return next;
+		});
+	}
+
+	function handleToggleLogExternal() {
+		setLogExternal((prev) => {
+			const next = !prev;
+			if (typeof window !== 'undefined') {
+				localStorage.setItem(LOG_EXTERNAL_KEY, String(next));
+			}
+			showToast(next ? 'External API logging enabled' : 'External API logging disabled');
 			return next;
 		});
 	}
@@ -554,6 +570,8 @@ export function LogInspector({ className = '', options }: LogInspectorProps) {
 								setPingThreshold={setPingThreshold}
 								sizeThreshold={sizeThreshold}
 								setSizeThreshold={setSizeThreshold}
+								logExternal={logExternal}
+								handleToggleLogExternal={handleToggleLogExternal}
 							/>
 						</div>
 					</LogInspectorToolbar>

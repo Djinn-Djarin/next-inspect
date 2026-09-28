@@ -56,10 +56,13 @@ export function installClientFetchInterceptor(options: ClientFetchInterceptorOpt
 				const headers = new Headers(init?.headers);
 				if (!headers.has('X-Initiator')) headers.set('X-Initiator', initiator);
 				requestInit = { ...init, headers };
-			} else if (logExternal) {
-				const initiator = captureInitiator();
-				const { terminalStore } = await import('./store');
-				const method = (requestInit?.method || (typeof input === 'string' ? 'GET' : 'GET')).toUpperCase();
+			} else {
+				// Read dynamic setting from localStorage, fallback to code option
+				const isExternalLogEnabled = (typeof window !== 'undefined' && localStorage.getItem('li-log-external') === 'true') || logExternal;
+				if (isExternalLogEnabled) {
+					const initiator = captureInitiator();
+					const { terminalStore } = await import('./store');
+					const method = (requestInit?.method || (typeof input === 'string' ? 'GET' : 'GET')).toUpperCase();
 				const t0 = performance.now();
 				let request_body: unknown = undefined;
 				if (requestInit?.body) {
@@ -121,6 +124,7 @@ export function installClientFetchInterceptor(options: ClientFetchInterceptorOpt
 					}));
 					throw err;
 				}
+			}
 			}
 		} catch {
 			/* if header injection fails, fall through to plain fetch */
