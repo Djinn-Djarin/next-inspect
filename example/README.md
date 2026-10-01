@@ -1,5 +1,7 @@
 # @djarin/next-inspect Interactive Demo
 
+<a href="https://github.com/Djinn-Djarin/next-inspect"><img src="https://img.shields.io/badge/GitHub-Repository-181717?logo=github&style=for-the-badge" alt="GitHub Repository"/></a>
+
 This is the official interactive demo for [`@djarin/next-inspect`](https://www.npmjs.com/package/@djarin/next-inspect) — a zero-code, pluggable request and console log inspector for Next.js.
 
 ## Getting Started

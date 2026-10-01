@@ -1,6 +1,6 @@
 # Next.js Request Logger & Network Inspector (@djarin/next-inspect)
 
-[![GitHub Repository](https://img.shields.io/badge/GitHub-Djinn--Djarin%2Fnext--inspect-181717?logo=github&style=flat)](https://github.com/Djinn-Djarin/next-inspect)
+<a href="https://github.com/Djinn-Djarin/next-inspect"><img src="https://img.shields.io/badge/GitHub-Repository-181717?logo=github&style=for-the-badge" alt="GitHub Repository"/></a>
 
 A zero-code, pluggable request and console log inspector for Next.js App Router. Drop in the plugin, and every `/api/*` call and server-side `fetch` is automatically captured. 
 
@@ -10,15 +10,17 @@ It intercepts method, URL, status, duration, request/response bodies, and exact 
 
 Want to see the logger in action before installing? Click below to instantly launch a fully configured Next.js playground in your browser:
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Djinn-Djarin/next-inspect?file=example/app/page.tsx)
+<a href="https://stackblitz.com/github/Djinn-Djarin/next-inspect?file=example/app/page.tsx"><img src="https://img.shields.io/badge/Open_in_StackBlitz-1269D3?logo=stackblitz&style=for-the-badge" alt="Open in StackBlitz"/></a>
 
-## Install
+## Setup Guide
+
+### Step 1: Install the package
 
 ```bash
 npm i -D @djarin/next-inspect
 ```
 
-## Setup
+### Step 2: Configure Next.js
 
 Add the `withLogInspector` wrapper to your `next.config.mjs` / `next.config.ts`:
 
@@ -31,7 +33,7 @@ export default withLogInspector()({
   // Next.js basePath (if your app uses a custom base path like '/traccrops')
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   
-  // ⚠️ REQUIRED FOR NEXT.JS 14:
+  // REQUIRED FOR NEXT.JS 14:
   // Next.js 14 requires this flag to enable instrumentation.ts.
   // Next.js 15 users can omit this as it is stable and enabled by default.
   experimental: {
@@ -40,7 +42,9 @@ export default withLogInspector()({
 });
 ```
 
-Then create a client component wrapper (e.g. `src/components/log-inspector.tsx`):
+### Step 3: Create the UI Wrapper
+
+Create a client component wrapper somewhere in your app (e.g. `src/components/log-inspector.tsx`):
 
 ```tsx
 "use client";
@@ -62,6 +66,8 @@ export function LogInspectorWrapper() {
   );
 }
 ```
+
+### Step 4: Render in Root Layout
 
 And render the wrapper in your root `app/layout.tsx`:
 
