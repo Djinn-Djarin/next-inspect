@@ -1,10 +1,14 @@
-# @djarin/next-inspect
+# Next.js Request Logger & Network Inspector (@djarin/next-inspect)
 
-Zero-code, pluggable request/API logging for Next.js. Drop in the plugin, and every `/api/*` call (and server-side `fetch`) is captured with method, URL, status, duration, request/response bodies and a `file:line` initiator — streamed to an always-on inspector panel in the corner of your app.
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Djinn--Djarin%2Fnext--inspect-181717?logo=github&style=flat)](https://github.com/Djinn-Djarin/next-inspect)
 
-## 🚀 Interactive Demo
+A zero-code, pluggable request and console log inspector for Next.js App Router. Drop in the plugin, and every `/api/*` call and server-side `fetch` is automatically captured. 
 
-Want to see it in action before installing? Click below to instantly launch a fully configured Next.js playground in your browser:
+It intercepts method, URL, status, duration, request/response bodies, and exact `file:line` initiators, streaming them to a floating in-app dashboard.
+
+## Interactive Demo
+
+Want to see the logger in action before installing? Click below to instantly launch a fully configured Next.js playground in your browser:
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Djinn-Djarin/next-inspect?file=example/app/page.tsx)
 
@@ -185,3 +189,4 @@ The client automatically:
 
 MIT
 
+

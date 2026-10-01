@@ -92,26 +92,29 @@ export function installClientFetchInterceptor(options: ClientFetchInterceptorOpt
 					const res = await originalFetch(input, requestInit);
 					const duration_ms = Math.round(performance.now() - t0);
 					
-					let response_body: unknown = undefined;
-					try {
-						const text = await res.clone().text();
+					(async () => {
+						let response_body: unknown = undefined;
 						try {
-							response_body = JSON.parse(text);
+							const text = await res.clone().text();
+							try {
+								response_body = JSON.parse(text);
+							} catch {
+								response_body = text;
+							}
 						} catch {
-							response_body = text;
+							// Opaque response or stream reading failed
 						}
-					} catch {
-						// Opaque response or stream reading failed
-					}
 
-					terminalStore.updateLog(logId, () => ({
-						message: `[API] ${method} ${url} — ${res.ok ? 'success' : 'failed'} (HTTP ${res.status} · ${duration_ms}ms)`,
-						type: res.ok ? 'success' : 'error',
-						pending: false,
-						status: res.status,
-						duration_ms,
-						response_body
-					}));
+						terminalStore.updateLog(logId, () => ({
+							message: `[API] ${method} ${url} — ${res.ok ? 'success' : 'failed'} (HTTP ${res.status} · ${duration_ms}ms)`,
+							type: res.ok ? 'success' : 'error',
+							pending: false,
+							status: res.status,
+							duration_ms,
+							response_body
+						}));
+					})();
+					
 					return res;
 				} catch (err) {
 					const duration_ms = Math.round(performance.now() - t0);
